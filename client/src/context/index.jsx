@@ -1,6 +1,6 @@
 import React, {createContext, useContext,useEffect,useRef,useState} from 'react';
 import { ethers } from 'ethers';
-import web3Modal from 'web3modal';
+import Web3Modal from 'web3modal';
 import {useNavigate} from 'react-router-dom';
 import {ADDRESS, ABI} from '../contract';
 
@@ -12,42 +12,34 @@ export const GlobalContextProvider = ({children}) => {
     const [contract, setContract] = useState('');
     const [showAlert, setShowAlert] = useState({status: false, type: 'info',message: ''});
 
-    const updateWalletAddress = async () => {
-        const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
-        if(accounts) setWalletAddress(accounts[0]);
-    }
-
-    useEffect(() => {
-        updateWalletAddress();
-        window.ethereum.on('accountsChanged', updateWalletAddress);
-    }, []);
-
-    useEffect(() => {
-        const setSmartContractAndProvider = async () => {
-            const web3Modal = new web3Modal();
+    const connectWallet = async () => {
+        try {
+            const web3Modal = new Web3Modal();
             const connection = await web3Modal.connect();
             const provider = new ethers.providers.Web3Provider(connection);
             const signer = provider.getSigner();
+            const address = await signer.getAddress();
+            setWalletAddress(address);
             const newContract = new ethers.Contract(ADDRESS, ABI, signer);
-
             setContract(newContract);
             setProvider(provider);
+        } catch (err) {
+            setShowAlert({status: true, type: 'error', message: 'Failed to connect wallet: ' + err.message});
         }
-        setSmartContractAndProvider();
-    },[])
+    };
 
     useEffect(() => {
         if(showAlert.status){
             const timer = setTimeout(() => {
                 setShowAlert({status: false, type: 'info',message: ''});
-            },[5000]);
+            },5000);
             return () => clearTimeout(timer);
         }
     },[showAlert])
 
     return (
         <GlobalContext.Provider value={{
-            contract,walletAddress,showAlert,setShowAlert
+            contract,walletAddress,showAlert,setShowAlert,connectWallet
         }}>
             {children}
         </GlobalContext.Provider>

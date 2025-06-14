@@ -12,4 +12,15 @@ const AddNewEvent=(eventFilter,provider,cb)=> {  //cb-- callback
 
 }
 
-export default AddNewEvent;
+export const createEventListeners= ({navigate,contract,provider,walletAddress,setShowAlert})=>{
+    const newPlayerEventFilter= contract.filters.NewPlayer();
+
+    AddNewEvent(newPlayerEventFilter,provider,({args})=>{
+        console.log("New Player Created!",args);
+
+        if(walletAddress == args.owner){
+            setShowAlert({status: true, type: 'success', message: "Player registered successfully!"});
+        }
+        });
+};
+

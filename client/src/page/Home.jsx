@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect,useState} from 'react';
 import {PageHOC, CustomInput, CustomButton} from '../components';
-
+import {useNavigate} from 'react-router-dom';
 import {useGlobalContext} from '../context';
 
 const Home = () => {
@@ -27,10 +27,26 @@ const Home = () => {
       setShowAlert({ status: true, type: "failure", message: error.message });
     }
   };
+  const navigate= useNavigate();
+  useEffect(()=>{
+    const checkForPlayerToken= async()=>{
+      const playerExists= await contract.isPlayer(walletAddress);
+      const playerTokenExists= await contract.isPlayerToken(walletAddress);
+
+      console.log(playerExists,playerTokenExists);
+
+      if(playerExists && playerTokenExists){
+        navigate('/create-battle')
+    }
+  }
+    if(contract){
+      checkForPlayerToken();
+    }
+  },[contract]);
   return (
     <>
       {!walletAddress && (
-        <button onClick={connectWallet}>Connect Wallet</button>
+        <button className="flex flex-col" onClick={connectWallet}>Connect Wallet</button>
       )}
       <div className="flex flex-col">
         <CustomInput 

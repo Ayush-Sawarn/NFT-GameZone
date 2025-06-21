@@ -12,7 +12,7 @@ const AddNewEvent=(eventFilter,provider,cb)=> {  //cb-- callback
 
 }
 
-export const createEventListeners= ({navigate,contract,provider,walletAddress,setShowAlert})=>{
+export const createEventListeners= ({navigate,contract,provider,walletAddress,setShowAlert,setUpdateGameData})=>{
     const newPlayerEventFilter= contract.filters.NewPlayer();
 
     AddNewEvent(newPlayerEventFilter,provider,({args})=>{
@@ -22,5 +22,17 @@ export const createEventListeners= ({navigate,contract,provider,walletAddress,se
             setShowAlert({status: true, type: 'success', message: "Player registered successfully!"});
         }
         });
+
+    const newBattleEventFilter= contract.filters.NewBattle();
+// adding an event listener which navigates the user to join the battle page 
+    AddNewEvent(newBattleEventFilter,provider,({args})=>{
+        console.log("New Battle Started", args, walletAddress); 
+
+        if(walletAddress.toLowerCase() === args.player1.toLowerCase() || walletAddress.toLowerCase() === args.player2.toLowerCase()){
+            navigate(`/battle/${args.battleName}`);
+        }
+        setUpdateGameData((prevUpdateGameData)=> prevUpdateGameData+1);
+
+    });
 };
 

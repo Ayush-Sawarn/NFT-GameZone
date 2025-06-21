@@ -5,12 +5,28 @@ import {useGlobalContext} from '../context';
 import {PageHOC,CustomInput,CustomButton,GameLoads} from '../components';
 
 const createBattle = () => {
-  const {contract,battleName,setBattleName} = useGlobalContext();
+  const {contract,battleName,setBattleName, showAlert, setShowAlert, gameData} = useGlobalContext();
   const [waitBattle,setWaitBattle] = useState(false);
   const navigate= useNavigate();
 
+  useEffect(()=>{
+    if(gameData?.activeBattle?.battleStatus === 0){
+      setWaitBattle(true);
+    }
+  },[gameData])
+
   const handleClick= async()=>{
+    if (!contract) {
+      setShowAlert({
+        status: true,
+        type: "failure",
+        message: "Please connect your wallet to create a battle",
+      });
+      return;
+    }
+
     if(!battleName || !battleName.trim())return null;
+
     try{
       await contract.createBattle(battleName);
       setWaitBattle(true);

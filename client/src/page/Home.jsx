@@ -45,9 +45,10 @@ const Home = () => {
   },[contract]);
   return (
     <>
-      {!walletAddress && (
-        <button className="flex flex-col" onClick={connectWallet}>Connect Wallet</button>
-      )}
+      <button
+  className="bg-purple-600 hover:bg-purple-400 text-white font-bold py-2 px-4 rounded shadow transition duration-200"
+  onClick={connectWallet}>Connect Wallet</button>
+
       <div className="flex flex-col">
         <CustomInput 
         Label="Name"

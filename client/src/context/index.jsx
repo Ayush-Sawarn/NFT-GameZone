@@ -15,6 +15,8 @@ export const GlobalContextProvider = ({children}) => {
     const [battleName, setBattleName] = useState('');
     const [gameData, setGameData] = useState({players: [], pendingBattles: [], activeBattle: null});
     const [updateGameData, setUpdateGameData]= useState(0);
+    const [battleGround, setBattleGround]= useState('bg-astral');
+
 
     const navigate= useNavigate();
     const connectWallet = async () => {
@@ -68,11 +70,11 @@ export const GlobalContextProvider = ({children}) => {
             setGameData({pendingBattles: pendingBattles.slice(1), activeBattle});
         }
         if(contract) fetchGameData();
-    },[contract],[updateGameData])
+    },[contract,updateGameData])
 
     return (
         <GlobalContext.Provider value={{
-            contract,walletAddress,showAlert,setShowAlert,connectWallet,battleName,setBattleName,gameData
+            contract,walletAddress,showAlert,setShowAlert,connectWallet,battleName,setBattleName,gameData,battleGround,setBattleGround,
         }}>
             {children}
         </GlobalContext.Provider>

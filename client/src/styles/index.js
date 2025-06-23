@@ -29,6 +29,7 @@ const styles = {
 
   // Game page
   gameContainer: 'w-screen min-h-screen bg-cover bg-no-repeat bg-center flex-col',
+  gameBattlegroundContainer: 'flex flex-col justify-between h-full w-full',
   gameMoveBox: 'sm:w-20 w-14 sm:h-20 h-14 rounded-full cursor-pointer border-[2px]',
   gameMoveIcon: 'w-1/2 h-1/w-1/2 object-contain',
 
@@ -41,7 +42,7 @@ const styles = {
   playerInfoSpan: 'font-extrabold text-white',
 
   // card component
-  cardContainer: 'relative sm:w-[260px] w-[220px] sm:h-[335px] h-[280px] z-0 transition-all',
+  cardContainer: 'relative sm:w-[210px] w-[170px] sm:h-[270px] h-[210px] z-0 transition-all',
   cardImg: 'w-full h-full object-contain',
   cardPointContainer: 'absolute sm:w-[40px] w-[32px] sm:h-[40px] h-[32px] rounded-[25px] bottom-[31.4%]',
   cardPoint: 'font-rajdhani text-[20px] font-bold',

@@ -18,6 +18,7 @@ export const GlobalContextProvider = ({children}) => {
     const [updateGameData, setUpdateGameData]= useState(0);
     const [battleGround, setBattleGround]= useState('bg-astral');
     const [step,setStep]= useState(1);
+    const [errorMessage, setErrorMessage]= useState('');
 
 
     const navigate= useNavigate();
@@ -76,13 +77,27 @@ export const GlobalContextProvider = ({children}) => {
     },[contract],step)
 
     useEffect(() => {
-        if(showAlert.status){
+        if(showAlert?.status){
             const timer = setTimeout(() => {
-                setShowAlert({status: false, type: 'info',message: ''});
-            },5000);
+                setShowAlert({status: false, type: 'info',message: ''})},[5000])
             return () => clearTimeout(timer);
         }
     },[showAlert])
+
+    // Handle error messages
+
+    useEffect(()=>{
+        if(errorMessage){
+            const parsedErrorMessage= errorMessage?.reason?.slice('execution reverted: '.length).slice(0,-1);
+            if(parsedErrorMessage){
+                setShowAlert({
+                    status: true,
+                    type: 'failure',
+                    message: parsedErrorMessage
+                })
+            }
+        }
+    },[errorMessage])
 
     useEffect(()=>{
         const fetchGameData= async()=>{
@@ -106,7 +121,7 @@ export const GlobalContextProvider = ({children}) => {
 
     return (
         <GlobalContext.Provider value={{
-            contract,walletAddress,showAlert,setShowAlert,connectWallet,updateCurrentWalletAddress,battleName,setBattleName,gameData,battleGround,setBattleGround,
+            contract,walletAddress,showAlert,setShowAlert,connectWallet,updateCurrentWalletAddress,battleName,setBattleName,gameData,battleGround,setBattleGround,errorMessage,setErrorMessage
         }}>
             {children}
         </GlobalContext.Provider>

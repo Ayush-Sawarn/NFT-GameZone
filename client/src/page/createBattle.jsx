@@ -5,7 +5,7 @@ import {useGlobalContext} from '../context';
 import {PageHOC,CustomInput,CustomButton,GameLoads} from '../components';
 
 const createBattle = () => {
-  const {contract,battleName,setBattleName, showAlert, setShowAlert, gameData} = useGlobalContext();
+  const {contract,battleName,setBattleName, showAlert, setShowAlert, gameData,setErrorMessage} = useGlobalContext();
   const [waitBattle,setWaitBattle] = useState(false);
   const navigate= useNavigate();
 
@@ -31,7 +31,7 @@ const createBattle = () => {
       await contract.createBattle(battleName);
       setWaitBattle(true);
     } catch (error){
-      console.log(error);
+      setErrorMessage(error);
     }
   }
   return (

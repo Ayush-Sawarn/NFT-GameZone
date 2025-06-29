@@ -5,7 +5,7 @@ import {useGlobalContext} from '../context';
 import styles from '../styles';
 
 const JoinBattles= ()=>{
-    const {contract,gameData,setShowAlert, setBattleName, walletAddress} = useGlobalContext();
+    const {contract,gameData,setShowAlert, setBattleName, walletAddress, setErrorMessage} = useGlobalContext();
     const navigate= useNavigate();
 
     useEffect(()=>{
@@ -20,7 +20,7 @@ const JoinBattles= ()=>{
 
             setShowAlert({status: true, type: 'success',message: `Joining ${battleName}`})
         } catch(error){
-            console.log(error);
+            setErrorMessage(error);
         }
     }
     return(

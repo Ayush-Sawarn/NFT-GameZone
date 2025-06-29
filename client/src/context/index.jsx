@@ -19,6 +19,18 @@ export const GlobalContextProvider = ({children}) => {
 
 
     const navigate= useNavigate();
+        
+    useEffect(()=>{
+        const isBattleground= localStorage.getItem('battleground');
+        if(isBattleground){
+            setBattleGround(isBattleground);
+        }
+        else{
+            localStorage.setItem('battleground',battleGround)
+        }
+    },[])
+
+   
     const connectWallet = async () => {
         try {
             const web3Modal = new Web3Modal();

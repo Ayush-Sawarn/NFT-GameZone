@@ -4,6 +4,7 @@ import Web3Modal from 'web3modal';
 import {useNavigate} from 'react-router-dom';
 import {ADDRESS, ABI} from '../contract';
 import {createEventListeners} from './createEventListener';
+import { GetParams } from '../utils/onboard';
 
 const GlobalContext = createContext();
 
@@ -16,6 +17,7 @@ export const GlobalContextProvider = ({children}) => {
     const [gameData, setGameData] = useState({players: [], pendingBattles: [], activeBattle: null});
     const [updateGameData, setUpdateGameData]= useState(0);
     const [battleGround, setBattleGround]= useState('bg-astral');
+    const [step,setStep]= useState(1);
 
 
     const navigate= useNavigate();
@@ -30,6 +32,24 @@ export const GlobalContextProvider = ({children}) => {
         }
     },[])
 
+    const updateCurrentWalletAddress = async () => {
+        try {
+            await connectWallet();
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(()=>{
+        const resetParams= async()=>{
+            const currentStep= await GetParams();
+
+            setStep(currentStep.step);
+        }
+        resetParams();
+        window?.ethereum?.on('chainChanged',()=>resetParams());
+        window?.ethereum?.on('accountsChanged',()=>resetParams());
+    },[])
    
     const connectWallet = async () => {
         try {
@@ -48,12 +68,12 @@ export const GlobalContextProvider = ({children}) => {
     };
 
     useEffect(()=>{
-        if(contract){
+        if(step!== -1 && contract){
             createEventListeners({
                 navigate,contract,provider,walletAddress,setShowAlert,setUpdateGameData,
             }); 
         }
-    },[contract])
+    },[contract],step)
 
     useEffect(() => {
         if(showAlert.status){
@@ -86,7 +106,7 @@ export const GlobalContextProvider = ({children}) => {
 
     return (
         <GlobalContext.Provider value={{
-            contract,walletAddress,showAlert,setShowAlert,connectWallet,battleName,setBattleName,gameData,battleGround,setBattleGround,
+            contract,walletAddress,showAlert,setShowAlert,connectWallet,updateCurrentWalletAddress,battleName,setBattleName,gameData,battleGround,setBattleGround,
         }}>
             {children}
         </GlobalContext.Provider>
